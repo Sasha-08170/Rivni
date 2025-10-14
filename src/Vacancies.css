@@ -1,0 +1,187 @@
+.vacancies {
+  padding: 48px 32px;
+  background: linear-gradient(180deg, #fff8fa 0%, #fff2f6 100%);
+  color: #3a1f2f;
+  font-family: "Inter", sans-serif;
+  transition: all 0.3s ease;
+}
+
+.vacancies__breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #b48a9c;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+
+.vacancies__link {
+  color: #a05d7f;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.vacancies__link:hover {
+  color: #8a4e6c;
+  text-decoration: underline;
+}
+
+.vacancies__separator {
+  opacity: 0.7;
+}
+
+.vacancies__title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #2c1522;
+  margin-bottom: 28px;
+}
+
+.vacancies__filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 40px;
+}
+
+.vacancies__search {
+  flex: 1 1 100%;
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1px solid #d1a5b4;
+  font-size: 15px;
+  outline: none;
+  transition: 0.3s;
+}
+
+.vacancies__search:focus {
+  border-color: #a05d7f;
+  box-shadow: 0 0 0 3px rgba(160, 93, 127, 0.15);
+}
+
+.vacancies__filter {
+  display: flex;
+  flex-direction: column;
+  min-width: 200px;
+}
+
+.vacancies__label {
+  font-size: 13px;
+  color: #6d5061;
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+.vacancies__select {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #d1a5b4;
+  font-size: 14px;
+  outline: none;
+  background: #fff;
+  transition: 0.3s;
+}
+
+.vacancies__select:hover,
+.vacancies__select:focus {
+  border-color: #a05d7f;
+  box-shadow: 0 0 0 3px rgba(160, 93, 127, 0.15);
+}
+
+.vacancies__actions {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.vacancies__button {
+  background: #a05d7f;
+  color: #fff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s ease;
+}
+
+.vacancies__button:hover {
+  background: #8a4e6c;
+  transform: translateY(-1px);
+}
+
+.vacancies__button--clear {
+  background: #f3dbe5;
+  color: #4a2c3a;
+}
+
+.vacancies__button--clear:hover {
+  background: #e3c9d3;
+}
+
+.vacancy-card {
+  background: #fff;
+  border: 1px solid #e3c9d3;
+  border-radius: 16px;
+  padding: 28px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 10px rgba(160, 93, 127, 0.08);
+  transition: 0.3s;
+}
+
+.vacancy-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 18px rgba(160, 93, 127, 0.15);
+}
+
+.vacancy-card__header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.vacancy-card__company {
+  font-weight: 600;
+}
+
+.vacancy-card__location {
+  font-size: 14px;
+  color: #7d6473;
+}
+
+.vacancy-card__badge {
+  margin-left: auto;
+  background: #c68ea4;
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 14px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.vacancy-card__position {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.vacancy-card__salary {
+  font-size: 18px;
+  font-weight: 600;
+  color: #2c1522;
+  margin-bottom: 10px;
+}
+
+.vacancy-card__body p {
+  margin: 4px 0;
+  line-height: 1.5;
+}
+
+.vacancies__empty {
+  text-align: center;
+  font-size: 16px;
+  color: #7d6473;
+  margin-top: 40px;
+}
