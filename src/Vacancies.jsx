@@ -1,9 +1,21 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import "./Vacancies.css";
 
+// === Конфигурация фильтров ===
+// Вынесена за пределы компонента, чтобы не пересоздавалась при каждом рендере.
+// Содержит список полей, по которым выполняется фильтрация.
+const FILTER_FIELDS = [
+  { name: "category", label: "Категорія" },
+  { name: "department", label: "Відділ" },
+  { name: "position", label: "Позиція" },
+  { name: "type", label: "Тип компанії" },
+  { name: "format", label: "Формат" },
+];
+
 const Vacancies = () => {
-  // === Массив вакансий ===
-  const vacanciesData = [
+  // === Данные о вакансиях ===
+  // В реальном проекте эти данные обычно приходят из API.
+  const vacancies = [
     {
       id: 1,
       company: "Hidden X",
@@ -65,158 +77,68 @@ const Vacancies = () => {
           "Ми шукаємо React-розробника з досвідом роботи з Redux, REST API, Tailwind або Bootstrap.",
       },
     },
-    {
-      id: 4,
-      company: "BizPro",
-      location: "Kharkiv",
-      title: "Sales Manager",
-      salary: "1200$ + бонуси",
-      badge: "Top",
-      category: "Продажі",
-      department: "Комерція",
-      position: "Sales Manager",
-      type: "Агентство",
-      format: "Офіс",
-      description: {
-        position: "Менеджер з продажу",
-        location: "офіс (Харків)",
-        format: "повна зайнятість",
-        lookingFor:
-          "Активного спеціаліста, який вміє працювати з клієнтами, вести переговори та досягати KPI.",
-      },
-    },
-    {
-      id: 5,
-      company: "TechMind",
-      location: "Odessa",
-      title: "QA Engineer",
-      salary: "1300$",
-      badge: "Hot",
-      category: "IT",
-      department: "Тестування",
-      position: "QA Engineer",
-      type: "Продуктова компанія",
-      format: "Віддалено",
-      description: {
-        position: "Middle QA Engineer",
-        location: "віддалено",
-        format: "повна зайнятість",
-        lookingFor:
-          "Шукаємо QA спеціаліста, який має досвід у ручному тестуванні веб-додатків.",
-      },
-    },
-    {
-      id: 6,
-      company: "AdVision",
-      location: "Dnipro",
-      title: "SMM Specialist",
-      salary: "800$",
-      badge: "New",
-      category: "Маркетинг",
-      department: "Реклама",
-      position: "SMM Specialist",
-      type: "Агентство",
-      format: "Гібрид",
-      description: {
-        position: "SMM Specialist (Instagram, TikTok)",
-        location: "офіс або віддалено",
-        format: "гібридна робота",
-        lookingFor:
-          "Маєш креатив і вмієш працювати з аналітикою — welcome в команду!",
-      },
-    },
-    {
-      id: 7,
-      company: "BrightTeam",
-      location: "Kyiv",
-      title: "Project Manager",
-      salary: "2200$",
-      badge: "Top",
-      category: "IT",
-      department: "Менеджмент",
-      position: "Project Manager",
-      type: "Продуктова компанія",
-      format: "Гібрид",
-      description: {
-        position: "PM Middle/Senior",
-        location: "офіс або гібрид (Київ)",
-        format: "повна зайнятість",
-        lookingFor:
-          "Досвід керування IT-командою, володіння Jira, Scrum, Agile. Вітається сертифікація PMP.",
-      },
-    },
-    {
-      id: 8,
-      company: "MarketIQ",
-      location: "Poland / Remote",
-      title: "SEO Specialist",
-      salary: "1400$",
-      badge: "Active",
-      category: "Маркетинг",
-      department: "SEO",
-      position: "SEO Specialist",
-      type: "Агентство",
-      format: "Віддалено",
-      description: {
-        position: "SEO Specialist (Linkbuilding + Content)",
-        location: "віддалено",
-        format: "повна зайнятість",
-        lookingFor:
-          "Потрібен SEO спеціаліст із досвідом побудови стратегії та оптимізації сайтів під різні ринки.",
-      },
-    },
   ];
 
   // === Состояние фильтров ===
+  // При первом рендере пробуем считать фильтры из localStorage (если были сохранены ранее).
+  // Если нет — создаем объект с пустыми значениями для всех полей фильтрации.
   const [filters, setFilters] = useState(() => {
     const saved = localStorage.getItem("vacancyFilters");
     return saved
       ? JSON.parse(saved)
-      : { category: "", department: "", position: "", type: "", format: "" };
+      : Object.fromEntries(FILTER_FIELDS.map((f) => [f.name, ""]));
   });
 
-  const [search, setSearch] = useState("");
+  // === Состояние строки поиска ===
+  const [searchQuery, setSearchQuery] = useState("");
 
+  // === Синхронизация фильтров с localStorage ===
+  // Каждый раз при изменении фильтров — сохраняем их.
   useEffect(() => {
     localStorage.setItem("vacancyFilters", JSON.stringify(filters));
   }, [filters]);
 
-  const handleFilterChange = (e) => {
-    const { name, value } = e.target;
+  // === Обработчик изменения фильтра ===
+  // Обновляем нужное поле фильтра по имени (name).
+  const handleFilterChange = ({ target }) => {
+    const { name, value } = target;
     setFilters((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleClear = () => {
-    const cleared = {
-      category: "",
-      department: "",
-      position: "",
-      type: "",
-      format: "",
-    };
+  // === Очистка всех фильтров ===
+  // Сбрасываем состояние, очищаем localStorage и строку поиска.
+  const handleClearFilters = () => {
+    const cleared = Object.fromEntries(FILTER_FIELDS.map((f) => [f.name, ""]));
     setFilters(cleared);
-    setSearch("");
+    setSearchQuery("");
     localStorage.removeItem("vacancyFilters");
   };
 
-  // === Фильтрация ===
-  const filteredVacancies = vacanciesData.filter((v) => {
-    const matchesFilters =
-      (!filters.category || v.category === filters.category) &&
-      (!filters.department || v.department === filters.department) &&
-      (!filters.position || v.position === filters.position) &&
-      (!filters.type || v.type === filters.type) &&
-      (!filters.format || v.format === filters.format);
+  // === Основная фильтрация вакансий (useMemo) ===
+  // Мемоизируем вычисления, чтобы не пересчитывать при каждом рендере.
+  // Пересчет происходит только если изменились:
+  //  - filters (поля фильтрации)
+  //  - searchQuery (строка поиска)
+  const filteredVacancies = useMemo(() => {
+    return vacancies.filter((v) => {
+      // Проверяем совпадения по каждому фильтру
+      const matchesFilters = FILTER_FIELDS.every(
+        ({ name }) => !filters[name] || v[name] === filters[name]
+      );
 
-    const matchesSearch =
-      v.title.toLowerCase().includes(search.toLowerCase()) ||
-      v.company.toLowerCase().includes(search.toLowerCase());
+      // Проверяем совпадение с текстом поиска
+      const matchesSearch =
+        v.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        v.company.toLowerCase().includes(searchQuery.toLowerCase());
 
-    return matchesFilters && matchesSearch;
-  });
+      return matchesFilters && matchesSearch;
+    });
+  }, [vacancies, filters, searchQuery]);
 
+  // === Разметка ===
   return (
     <section className="vacancies">
+      {/* === Хлебные крошки === */}
       <div className="vacancies__breadcrumbs">
         <a href="#" className="vacancies__link">
           Головна
@@ -227,54 +149,46 @@ const Vacancies = () => {
 
       <h1 className="vacancies__title">Пошук вакансій</h1>
 
-      {/* === Форма фильтра === */}
+      {/* === Блок фильтрации === */}
       <form className="vacancies__filters" onSubmit={(e) => e.preventDefault()}>
+        {/* Поле поиска */}
         <input
           type="text"
           placeholder="🔍 Пошук за назвою або компанією..."
           className="vacancies__search"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
         />
 
-        {["category", "department", "position", "type", "format"].map(
-          (name) => (
-            <div className="vacancies__filter" key={name}>
-              <label className="vacancies__label">
-                {name === "category"
-                  ? "Категорія"
-                  : name === "department"
-                  ? "Відділ"
-                  : name === "position"
-                  ? "Позиція"
-                  : name === "type"
-                  ? "Тип компанії"
-                  : "Формат"}
-              </label>
-              <select
-                name={name}
-                className="vacancies__select"
-                value={filters[name]}
-                onChange={handleFilterChange}
-              >
-                <option value="">Усі</option>
-                {[...new Set(vacanciesData.map((v) => v[name]))].map((opt) => (
-                  <option key={opt} value={opt}>
-                    {opt}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )
-        )}
+        {/* Селекты фильтрации по каждому полю */}
+        {FILTER_FIELDS.map(({ name, label }) => (
+          <div className="vacancies__filter" key={name}>
+            <label className="vacancies__label">{label}</label>
+            <select
+              name={name}
+              className="vacancies__select"
+              value={filters[name]}
+              onChange={handleFilterChange}
+            >
+              <option value="">Усі</option>
+              {/* Уникальные значения для каждого фильтра */}
+              {[...new Set(vacancies.map((v) => v[name]))].map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+          </div>
+        ))}
 
+        {/* Кнопки действий */}
         <div className="vacancies__actions">
           <button type="submit" className="vacancies__button">
             🔎 Шукати
           </button>
           <button
             type="button"
-            onClick={handleClear}
+            onClick={handleClearFilters}
             className="vacancies__button vacancies__button--clear"
           >
             ❌ Очистити
@@ -282,18 +196,23 @@ const Vacancies = () => {
         </div>
       </form>
 
-      {/* === Список вакансій === */}
+      {/* === Список вакансий === */}
       <div className="vacancies__list">
         {filteredVacancies.length > 0 ? (
           filteredVacancies.map((v) => (
             <div key={v.id} className="vacancy-card">
+              {/* Заголовок карточки */}
               <div className="vacancy-card__header">
                 <span className="vacancy-card__company">{v.company}</span>
                 <span className="vacancy-card__location">{v.location}</span>
                 <span className="vacancy-card__badge">{v.badge}</span>
               </div>
+
+              {/* Название позиции */}
               <h2 className="vacancy-card__position">{v.title}</h2>
               <div className="vacancy-card__salary">{v.salary}</div>
+
+              {/* Основное описание */}
               <div className="vacancy-card__body">
                 <p>
                   <strong>Вакансія:</strong> {v.description.position}
@@ -319,4 +238,5 @@ const Vacancies = () => {
 };
 
 export default Vacancies;
+
 
