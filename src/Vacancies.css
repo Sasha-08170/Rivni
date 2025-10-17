@@ -1,11 +1,13 @@
+/* === ОСНОВНОЙ КОНТЕЙНЕР === */
 .vacancies {
   padding: 48px 32px;
-  background: linear-gradient(180deg, #fff8fa 0%, #fff2f6 100%);
-  color: #3a1f2f;
-  font-family: "Inter", sans-serif;
-  transition: all 0.3s ease;
+  background: linear-gradient(180deg, #fff8fa 0%, #fff2f6 100%); 
+  color: #3a1f2f; 
+  font-family: "Inter", sans-serif; 
+  transition: all 0.3s ease; 
 }
 
+/* === ХЛЕБНЫЕ КРОШКИ === */
 .vacancies__breadcrumbs {
   display: flex;
   align-items: center;
@@ -15,6 +17,7 @@
   font-size: 14px;
 }
 
+/* === ССЫЛКИ В ХЛЕБНЫХ КРОШКАХ === */
 .vacancies__link {
   color: #a05d7f;
   text-decoration: none;
@@ -26,10 +29,12 @@
   text-decoration: underline;
 }
 
+/* === РАЗДЕЛИТЕЛЬ В ХЛЕБНЫХ КРОШКАХ === */
 .vacancies__separator {
   opacity: 0.7;
 }
 
+/* === ЗАГОЛОВОК РАЗДЕЛА === */
 .vacancies__title {
   font-size: 32px;
   font-weight: 700;
@@ -37,6 +42,7 @@
   margin-bottom: 28px;
 }
 
+/* === ОБЕРТКА ДЛЯ ФИЛЬТРОВ === */
 .vacancies__filters {
   display: flex;
   flex-wrap: wrap;
@@ -44,6 +50,7 @@
   margin-bottom: 40px;
 }
 
+/* === ПОЛЕ ПОИСКА === */
 .vacancies__search {
   flex: 1 1 100%;
   padding: 12px 16px;
@@ -56,15 +63,17 @@
 
 .vacancies__search:focus {
   border-color: #a05d7f;
-  box-shadow: 0 0 0 3px rgba(160, 93, 127, 0.15);
+  box-shadow: 0 0 0 3px rgba(160, 93, 127, 0.15); 
 }
 
+/* === ОТДЕЛЬНЫЙ БЛОК С ФИЛЬТРОМ === */
 .vacancies__filter {
   display: flex;
   flex-direction: column;
   min-width: 200px;
 }
 
+/* === МЕТКА (label) ДЛЯ СЕЛЕКТА === */
 .vacancies__label {
   font-size: 13px;
   color: #6d5061;
@@ -72,6 +81,7 @@
   font-weight: 500;
 }
 
+/* === ВЫПАДАЮЩИЙ СПИСОК (select) === */
 .vacancies__select {
   padding: 10px 12px;
   border-radius: 8px;
@@ -88,12 +98,14 @@
   box-shadow: 0 0 0 3px rgba(160, 93, 127, 0.15);
 }
 
+/* === ДЕЙСТВИЯ (КНОПКИ) === */
 .vacancies__actions {
   display: flex;
   align-items: flex-end;
   gap: 10px;
 }
 
+/* === ОСНОВНАЯ КНОПКА === */
 .vacancies__button {
   background: #a05d7f;
   color: #fff;
@@ -110,6 +122,7 @@
   transform: translateY(-1px);
 }
 
+/* === КНОПКА "ОЧИСТИТЬ" === */
 .vacancies__button--clear {
   background: #f3dbe5;
   color: #4a2c3a;
@@ -119,6 +132,7 @@
   background: #e3c9d3;
 }
 
+/* === КАРТОЧКА ВАКАНСИИ === */
 .vacancy-card {
   background: #fff;
   border: 1px solid #e3c9d3;
@@ -134,6 +148,7 @@
   box-shadow: 0 8px 18px rgba(160, 93, 127, 0.15);
 }
 
+/* === ШАПКА КАРТОЧКИ === */
 .vacancy-card__header {
   display: flex;
   align-items: center;
@@ -142,15 +157,18 @@
   flex-wrap: wrap;
 }
 
+/* === КОМПАНИЯ === */
 .vacancy-card__company {
   font-weight: 600;
 }
 
+/* === ЛОКАЦИЯ === */
 .vacancy-card__location {
   font-size: 14px;
   color: #7d6473;
 }
 
+/* === МЕТКА (badge) === */
 .vacancy-card__badge {
   margin-left: auto;
   background: #c68ea4;
@@ -161,12 +179,14 @@
   font-weight: 500;
 }
 
+/* === ДОЛЖНОСТЬ === */
 .vacancy-card__position {
   font-size: 22px;
   font-weight: 700;
   margin-bottom: 4px;
 }
 
+/* === ЗАРПЛАТА === */
 .vacancy-card__salary {
   font-size: 18px;
   font-weight: 600;
@@ -174,14 +194,17 @@
   margin-bottom: 10px;
 }
 
+/* === ТЕКСТОВОЕ ОПИСАНИЕ === */
 .vacancy-card__body p {
   margin: 4px 0;
   line-height: 1.5;
 }
 
+/* === ПУСТОЙ СОСТОЯНИЕ (нет вакансий) === */
 .vacancies__empty {
   text-align: center;
   font-size: 16px;
   color: #7d6473;
   margin-top: 40px;
 }
+

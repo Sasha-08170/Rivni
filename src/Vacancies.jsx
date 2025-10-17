@@ -12,7 +12,7 @@ const FILTER_FIELDS = [
 ];
 
 // === Запрос к API ===
-// Можно использовать локальный файл или API-роут на сервере
+// Можно использовать локальный файл или API-асиос для сервера
 // Например: /api/vacancies.json 
 const fetchVacancies = async () => {
   const response = await fetch("/api/vacancies.json"); 
@@ -30,7 +30,7 @@ const Vacancies = () => {
   } = useQuery({
     queryKey: ["vacancies"],
     queryFn: fetchVacancies,
-    refetchOnWindowFocus: false, // не перезагружает при переключении вкладок
+    refetchOnWindowFocus: false, 
     staleTime: 1000 * 60 * 5,
   });
 
