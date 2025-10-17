@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
 import "./Vacancies.css";
 
 // === Конфигурация фильтров ===
-// Вынесена за пределы компонента, чтобы не пересоздавалась при каждом рендере.
-// Содержит список полей, по которым выполняется фильтрация.
 const FILTER_FIELDS = [
   { name: "category", label: "Категорія" },
   { name: "department", label: "Відділ" },
@@ -12,76 +11,30 @@ const FILTER_FIELDS = [
   { name: "format", label: "Формат" },
 ];
 
+// === Запрос к API ===
+// Можно использовать локальный файл или API-роут на сервере
+// Например: /api/vacancies.json 
+const fetchVacancies = async () => {
+  const response = await fetch("/api/vacancies.json"); 
+  if (!response.ok) throw new Error("Failed to load vacancies");
+  return response.json();
+};
+
 const Vacancies = () => {
-  // === Данные о вакансиях ===
-  // В реальном проекте эти данные обычно приходят из API.
-  const vacancies = [
-    {
-      id: 1,
-      company: "Hidden X",
-      location: "Ukraine",
-      title: "МЕДІАБАЙЕР",
-      salary: "1000$",
-      badge: "Hot",
-      category: "Маркетинг",
-      department: "Реклама",
-      position: "Media Buyer",
-      type: "Продуктова компанія",
-      format: "Віддалено",
-      description: {
-        position: "Media Buyer (FB, Gambling)",
-        location: "віддалено",
-        format:
-          "повна зайнятість (8 годин на день, з оперативним зв’язком із командою в робочих чатах)",
-        lookingFor:
-          "Шукаємо досвідченого медіабаєра, який упевнено працює з Facebook Ads, має успішні кейси та досвід по різних GEO.",
-      },
-    },
-    {
-      id: 2,
-      company: "NovaLab",
-      location: "Kyiv",
-      title: "UI/UX Designer",
-      salary: "1500$",
-      badge: "New",
-      category: "IT",
-      department: "Дизайн",
-      position: "Designer",
-      type: "Агентство",
-      format: "Офіс",
-      description: {
-        position: "UI/UX Designer",
-        location: "офіс (Київ)",
-        format: "повна зайнятість",
-        lookingFor:
-          "Маєш око до деталей і почуття стилю? Приєднуйся до нашої дизайн-команди.",
-      },
-    },
-    {
-      id: 3,
-      company: "NextSoft",
-      location: "Lviv",
-      title: "Frontend Developer",
-      salary: "2000$",
-      badge: "🔥",
-      category: "IT",
-      department: "Розробка",
-      position: "Frontend Developer",
-      type: "Продуктова компанія",
-      format: "Віддалено",
-      description: {
-        position: "React Developer",
-        location: "віддалено або офіс (Львів)",
-        format: "повна зайнятість",
-        lookingFor:
-          "Ми шукаємо React-розробника з досвідом роботи з Redux, REST API, Tailwind або Bootstrap.",
-      },
-    },
-  ];
+  // === React Query ===
+  const {
+    data: vacancies = [],
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery({
+    queryKey: ["vacancies"],
+    queryFn: fetchVacancies,
+    refetchOnWindowFocus: false, // не перезагружает при переключении вкладок
+    staleTime: 1000 * 60 * 5,
+  });
 
   // === Состояние фильтров ===
-  // При первом рендере пробуем считать фильтры из localStorage (если были сохранены ранее).
-  // Если нет — создаем объект с пустыми значениями для всех полей фильтрации.
   const [filters, setFilters] = useState(() => {
     const saved = localStorage.getItem("vacancyFilters");
     return saved
@@ -89,56 +42,49 @@ const Vacancies = () => {
       : Object.fromEntries(FILTER_FIELDS.map((f) => [f.name, ""]));
   });
 
-  // === Состояние строки поиска ===
+  // === Поисковая строка ===
   const [searchQuery, setSearchQuery] = useState("");
 
-  // === Синхронизация фильтров с localStorage ===
-  // Каждый раз при изменении фильтров — сохраняем их.
+  // === Синхронизация с localStorage ===
   useEffect(() => {
     localStorage.setItem("vacancyFilters", JSON.stringify(filters));
   }, [filters]);
 
-  // === Обработчик изменения фильтра ===
-  // Обновляем нужное поле фильтра по имени (name).
+  // === Обработка изменения фильтра ===
   const handleFilterChange = ({ target }) => {
     const { name, value } = target;
     setFilters((prev) => ({ ...prev, [name]: value }));
   };
 
-  // === Очистка всех фильтров ===
-  // Сбрасываем состояние, очищаем localStorage и строку поиска.
+  // === Очистка фильтров ===
   const handleClearFilters = () => {
     const cleared = Object.fromEntries(FILTER_FIELDS.map((f) => [f.name, ""]));
     setFilters(cleared);
     setSearchQuery("");
     localStorage.removeItem("vacancyFilters");
+    refetch();
   };
 
-  // === Основная фильтрация вакансий (useMemo) ===
-  // Мемоизируем вычисления, чтобы не пересчитывать при каждом рендере.
-  // Пересчет происходит только если изменились:
-  //  - filters (поля фильтрации)
-  //  - searchQuery (строка поиска)
+  // === Фильтрация и поиск ===
   const filteredVacancies = useMemo(() => {
     return vacancies.filter((v) => {
-      // Проверяем совпадения по каждому фильтру
       const matchesFilters = FILTER_FIELDS.every(
         ({ name }) => !filters[name] || v[name] === filters[name]
       );
-
-      // Проверяем совпадение с текстом поиска
       const matchesSearch =
         v.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         v.company.toLowerCase().includes(searchQuery.toLowerCase());
-
       return matchesFilters && matchesSearch;
     });
   }, [vacancies, filters, searchQuery]);
 
+  // === Состояние загрузки и ошибок ===
+  if (isLoading) return <div className="vacancies__loading">Завантаження...</div>;
+  if (isError) return <div className="vacancies__error">Помилка при завантаженні 😕</div>;
+
   // === Разметка ===
   return (
     <section className="vacancies">
-      {/* === Хлебные крошки === */}
       <div className="vacancies__breadcrumbs">
         <a href="#" className="vacancies__link">
           Головна
@@ -149,9 +95,7 @@ const Vacancies = () => {
 
       <h1 className="vacancies__title">Пошук вакансій</h1>
 
-      {/* === Блок фильтрации === */}
       <form className="vacancies__filters" onSubmit={(e) => e.preventDefault()}>
-        {/* Поле поиска */}
         <input
           type="text"
           placeholder="🔍 Пошук за назвою або компанією..."
@@ -160,7 +104,6 @@ const Vacancies = () => {
           onChange={(e) => setSearchQuery(e.target.value)}
         />
 
-        {/* Селекты фильтрации по каждому полю */}
         {FILTER_FIELDS.map(({ name, label }) => (
           <div className="vacancies__filter" key={name}>
             <label className="vacancies__label">{label}</label>
@@ -171,7 +114,6 @@ const Vacancies = () => {
               onChange={handleFilterChange}
             >
               <option value="">Усі</option>
-              {/* Уникальные значения для каждого фильтра */}
               {[...new Set(vacancies.map((v) => v[name]))].map((option) => (
                 <option key={option} value={option}>
                   {option}
@@ -181,7 +123,6 @@ const Vacancies = () => {
           </div>
         ))}
 
-        {/* Кнопки действий */}
         <div className="vacancies__actions">
           <button type="submit" className="vacancies__button">
             🔎 Шукати
@@ -196,23 +137,19 @@ const Vacancies = () => {
         </div>
       </form>
 
-      {/* === Список вакансий === */}
       <div className="vacancies__list">
         {filteredVacancies.length > 0 ? (
           filteredVacancies.map((v) => (
             <div key={v.id} className="vacancy-card">
-              {/* Заголовок карточки */}
               <div className="vacancy-card__header">
                 <span className="vacancy-card__company">{v.company}</span>
                 <span className="vacancy-card__location">{v.location}</span>
                 <span className="vacancy-card__badge">{v.badge}</span>
               </div>
 
-              {/* Название позиции */}
               <h2 className="vacancy-card__position">{v.title}</h2>
               <div className="vacancy-card__salary">{v.salary}</div>
 
-              {/* Основное описание */}
               <div className="vacancy-card__body">
                 <p>
                   <strong>Вакансія:</strong> {v.description.position}
@@ -238,5 +175,3 @@ const Vacancies = () => {
 };
 
 export default Vacancies;
-
-

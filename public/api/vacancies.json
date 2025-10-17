@@ -1,0 +1,59 @@
+[
+  {
+    "id": 1,
+    "company": "Hidden X",
+    "location": "Ukraine",
+    "title": "МЕДІАБАЙЕР",
+    "salary": "1000$",
+    "badge": "Hot",
+    "category": "Маркетинг",
+    "department": "Реклама",
+    "position": "Media Buyer",
+    "type": "Продуктова компанія",
+    "format": "Віддалено",
+    "description": {
+      "position": "Media Buyer (FB, Gambling)",
+      "location": "віддалено",
+      "format": "повна зайнятість",
+      "lookingFor": "Шукаємо досвідченого медіабаєра..."
+    }
+  },
+  {
+    "id": 2,
+    "company": "NovaLab",
+    "location": "Kyiv",
+    "title": "UI/UX Designer",
+    "salary": "1500$",
+    "badge": "New",
+    "category": "IT",
+    "department": "Дизайн",
+    "position": "Designer",
+    "type": "Агентство",
+    "format": "Офіс",
+    "description": {
+      "position": "UI/UX Designer",
+      "location": "офіс (Київ)",
+      "format": "повна зайнятість",
+      "lookingFor": "Маєш око до деталей і почуття стилю?"
+    }
+  },
+  {
+    "id": 3,
+    "company": "NextSoft",
+    "location": "Lviv",
+    "title": "Frontend Developer",
+    "salary": "2000$",
+    "badge": "🔥",
+    "category": "IT",
+    "department": "Розробка",
+    "position": "Frontend Developer",
+    "type": "Продуктова компанія",
+    "format": "Віддалено",
+    "description": {
+      "position": "React Developer",
+      "location": "віддалено або офіс (Львів)",
+      "format": "повна зайнятість",
+      "lookingFor": "Ми шукаємо React-розробника з досвідом..."
+    }
+  }
+]
